@@ -1,0 +1,36 @@
+# import & models:
+from sklearn.preprocessing import LabelEncoder
+from sklearn import preprocessing
+
+encoder=LabelEncoder()
+df['column'] = encoder.fit_transform(df['column'])
+
+
+from sklearn.linear_model import Lasso
+from sklearn.feature_selection import SelectFromModel
+
+model=SelectFromModel(Lasso(alpha=0.005,random_state=0)).fit(X_train,y_train) # 0 for Lasso
+(SelectFromModel(estimator=Lasso(alpha=0.005, random_state=0)))
+selected_features=X_train.columns[(model.get_support())]
+
+
+#Randomized Search CV
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.ensemble import RandomForestRegressor
+
+rf_regres= RandomForestRegressor()
+rf_re_random = RandomizedSearchCV(estimator = rf_regres, param_distributions = random_grid,
+                               scoring='neg_mean_squared_error',
+                               n_iter = 50, cv = 5, verbose=2, random_state=42, n_jobs = 1)
+rf_re_random.fit(X_train,y_train)
+
+#Faster than GridSearchCV
+RandomizedSearchCV(cv=5, estimator=RandomForestRegressor(), n_iter=50, n_jobs=1,
+                   param_distributions={'max_depth': [5, 10, 15],
+                                        'max_features': ['auto', 'sqrt'],
+                                        'min_samples_leaf': [3, 6, 9, 12],
+                                        'min_samples_split': [10, 15, 100],
+                                        'n_estimators': [150, 300, 450]},
+                   random_state=42, scoring='neg_mean_squared_error',
+                   verbose=2)
+
